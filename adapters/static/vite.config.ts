@@ -12,7 +12,7 @@ export default extendConfig(baseConfig, () => {
     },
     plugins: [
       staticAdapter({
-        origin: "https://i18n.euans.space",
+        origin: "https://l10n-manage.euans.space",
       }),
     ],
   };
