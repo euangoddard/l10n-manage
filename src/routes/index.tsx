@@ -14,6 +14,7 @@ import type { Item, Items } from "~/models/item";
 export default component$(() => {
   const LOCAL_STORAGE_KEY = "items";
   const items = useSignal<Items>([]);
+  const loading = useSignal(true);
 
   // Computed signal for grouping items by top-level key
   const groupedItems = useComputed$(() => {
@@ -37,6 +38,7 @@ export default component$(() => {
   // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     items.value = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? "[]");
+    loading.value = false;
   });
 
   useTask$(({ track }) => {
@@ -48,14 +50,36 @@ export default component$(() => {
 
   return (
     <div class="mx-auto min-h-screen max-w-5xl p-8">
-      {items.value.length === 0 ? (
+      {loading.value ? (
+        <div class="flex h-screen items-center justify-center">
+          <span class="loading loading-spinner loading-lg"></span>
+        </div>
+      ) : items.value.length === 0 ? (
         <AddFile onData$={(data) => (items.value = data)} />
       ) : (
         <>
           <header class="bg-base-100 sticky top-0 z-10 mb-6 flex items-center justify-between py-4">
-            <span class="text-lg font-semibold">
-              Editing: {items.value.length} items
+            <span class="flex items-center">
+              <h2 class="text-lg font-medium">
+                Editing: {items.value.length} items
+              </h2>
+              <button
+                class="btn btn-sm btn-error ml-2"
+                onClick$={() => {
+                  if (
+                    confirm(
+                      "Are you sure you want to clear all items? This cannot be undone.",
+                    )
+                  ) {
+                    items.value = [];
+                    localStorage.removeItem(LOCAL_STORAGE_KEY);
+                  }
+                }}
+              >
+                Clear
+              </button>
             </span>
+
             <select
               class="select select-sm select-bordered w-auto"
               onChange$={(e) => {

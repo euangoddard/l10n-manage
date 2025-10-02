@@ -40,12 +40,11 @@ export const AddFile = component$<AddFileProps>((props) => {
 
   return (
     <div class="hero bg-base-200">
-      <div class="hero-content text-center">
+      <div class="hero-content p-8 text-center">
         <div class="max-w-md">
           <h1 class="text-5xl font-bold">Add a file</h1>
           <p class="py-6">
-            Upload a JSON file to import key-value pairs. Nested keys will be
-            flattened.
+            Upload a JSON file that contains strings to be translated.
           </p>
           <input
             type="file"
